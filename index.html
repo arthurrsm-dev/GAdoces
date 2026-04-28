@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GA Doces - Cada pedacinho importa!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; scroll-behavior: smooth; }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+        .bg-roxo { background-color: #4A1D52; }
+        .text-dourado { color: #D4AF37; }
+        .border-dourado { border-color: #D4AF37; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const PRODUTOS = [
+            { id: 1, nome: "Bauni Recheado", descricao: "Brownies recheados artesanais, que derretem a cada mordida.", preco: 6.00, imagem: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBy45IzvQemJ6_9eleq4NzW_SAorpwTrYyQw&s", sabores: ["Beijinho", "Doce de Leite", "Brigadeiro"] },
+            { id: 2, nome: "Alfajor", descricao: "Alfajores delicados, banhados com chocolate nobre.", preco: 5.00, imagem: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSkFMqvtdWekafYr7bY0tQkvCPlV8ZGNS3mw&s", sabores: ["Doce de Leite", "Brigadeiro"] },
+            { id: 3, nome: "Palha Italiana", descricao: "Palha italiana cremosa, combinação perfeita de maciez e crocância.", preco: 5.50, imagem: "https://static.itdg.com.br/images/640-400/0905759e2388082609f88813f04b16e5/328303-original.jpg", sabores: ["Brigadeiro", "Ninho", "Oreo"] },
+            { id: 4, nome: "Tortinha Gourmet", descricao: "Camadas de recheio, biscoito maisena e cobertura de ganache de chocolate.", preco: 8.00, imagem: "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?auto=format&fit=crop&w=400&q=80", sabores: ["Maracujá", "Limão"] }
+        ];
+
+        function App() {
+            const [carrinho, setCarrinho] = useState([]);
+            const numeroWhats = "5513992051054"; // ALTERE PARA SEU NÚMERO
+
+            const adicionarAoCarrinho = (produto, sabor) => {
+                const item = { ...produto, saborEscolhido: sabor, unicoId: Date.now() };
+                setCarrinho([...carrinho, item]);
+            };
+
+            const removerDoCarrinho = (id) => {
+                setCarrinho(carrinho.filter(item => item.unicoId !== id));
+            };
+
+            const finalizarPedido = () => {
+                let texto = `*Novo Pedido - GA Doces*\n\n`;
+                carrinho.forEach(item => {
+                    texto += `• ${item.nome} (${item.saborEscolhido}) - R$ ${item.preco.toFixed(2)}\n`;
+                });
+                const total = carrinho.reduce((acc, curr) => acc + curr.preco, 0);
+                texto += `\n*Total: R$ ${total.toFixed(2)}*`;
+                window.open(`https://wa.me/${numeroWhats}?text=${encodeURIComponent(texto)}`);
+            };
+
+            return (
+                <div className="min-h-screen flex flex-col">
+                    {/* Hero Section */}
+                    <header className="bg-roxo min-h-[80vh] flex flex-col items-center justify-center text-center px-4 border-b-8 border-dourado relative overflow-hidden">
+                        
+                        {/* Container da Logo */}
+                        <div className="mb-6 w-56 h-56 md:w-72 md:h-72 rounded-full overflow-hidden shadow-2xl border-4 border-[#D4AF37] mx-auto z-10 transition-transform duration-500 hover:scale-105">
+                            <img src="./logo.jpg" alt="Logo GA Doces" className="w-full h-full object-cover" />
+                        </div>
+                        
+                        <h1 className="text-4xl md:text-6xl font-bold text-dourado mb-3 tracking-tight z-10 mt-4">GA Doces</h1>
+                        <p className="text-white text-lg md:text-xl mb-8 opacity-90 font-light tracking-wide z-10">Onde cada pedacinho importa de verdade.</p>
+                        
+                        {/* Botões atualizados (Ambos vazados com borda branca) */}
+                        <div className="flex flex-col sm:flex-row gap-4 z-10">
+                            <a href="#catalogo" className="border border-white text-white px-8 py-3 rounded-full font-bold hover:bg-white hover:text-roxo transition-all shadow-lg">Ver Catálogo</a>
+                            <a href="#sobre" className="border border-white text-white px-8 py-3 rounded-full font-bold hover:bg-white hover:text-roxo transition-all shadow-lg">Nossa História</a>
+                        </div>
+                    </header>
+
+                    {/* Sobre Nós */}
+                    <section id="sobre" className="py-24 px-6 bg-white text-center">
+                        <div className="max-w-4xl mx-auto">
+                            <h2 className="text-4xl font-bold text-roxo mb-6">Nossa História</h2>
+                            <div className="w-20 h-1 bg-dourado mx-auto mb-8"></div>
+                            <p className="text-lg text-gray-600 leading-relaxed italic">
+                                "A GA Doces nasceu da paixão por transformar ingredientes simples em momentos inesquecíveis. 
+                                Idealizada por três amigos que sonhavam em empreender juntos, a GA Doces surgiu como uma faíca 
+                                de esperança. Criando produtos artesanais, com atenção aos detalhes e muito amor. Nosso compromisso 
+                                é com a qualidade e com o sorriso de cada cliente ao provar cada pedaço."
+                            </p>
+                        </div>
+                    </section>
+
+                    {/* Divisor Elegante entre as seções */}
+                    <div className="bg-gray-50 flex justify-center pt-16 pb-8">
+                        <div className="flex items-center gap-4">
+                            <div className="w-16 md:w-32 h-px bg-[#D4AF37]"></div>
+                            <span className="text-[#D4AF37] text-2xl">✦</span>
+                            <div className="w-16 md:w-32 h-px bg-[#D4AF37]"></div>
+                        </div>
+                    </div>
+
+                    {/* Catálogo e Carrinho */}
+                    <section id="catalogo" className="pb-24 bg-gray-50 px-4">
+                        
+                        {/* Cabeçalho do Catálogo */}
+                        <div className="text-center mb-12">
+                            <h2 className="text-4xl font-bold text-roxo mb-4">Nosso Catálogo</h2>
+                            <p className="text-gray-500">Escolha suas delícias e monte sua encomenda.</p>
+                        </div>
+
+                        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                {PRODUTOS.map(doce => (
+                                    <CardDoce key={doce.id} doce={doce} aoAdicionar={adicionarAoCarrinho} />
+                                ))}
+                            </div>
+
+                            {/* Carrinho Flutuante / Resumo */}
+                            <div className="bg-white p-6 rounded-2xl shadow-xl border border-gray-200 h-fit sticky top-10">
+                                <h3 className="text-2xl font-bold mb-4 text-roxo border-b pb-2">Seu Carrinho</h3>
+                                {carrinho.length === 0 ? (
+                                    <p className="text-gray-400 italic">Selecione suas delícias ao lado...</p>
+                                ) : (
+                                    <div>
+                                        {carrinho.map(item => (
+                                            <div key={item.unicoId} className="flex justify-between items-center border-b py-3">
+                                                <span className="text-sm font-medium">{item.nome} <br/><small className="text-gray-400">{item.saborEscolhido}</small></span>
+                                                <button onClick={() => removerDoCarrinho(item.unicoId)} className="text-red-400 hover:text-red-600 text-xs uppercase font-bold">Remover</button>
+                                            </div>
+                                        ))}
+                                        <div className="mt-6 flex justify-between font-bold text-xl text-roxo">
+                                            <span>Total:</span>
+                                            <span>R$ {carrinho.reduce((acc, curr) => acc + curr.preco, 0).toFixed(2)}</span>
+                                        </div>
+                                        <button onClick={finalizarPedido} className="w-full mt-6 bg-roxo text-dourado py-4 rounded-xl font-bold shadow-lg hover:brightness-110 transition-all">
+                                            Enviar Pedido pelo WhatsApp
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Footer / Contatos */}
+                    <footer id="contato" className="bg-roxo text-white py-12 px-6 border-t-4 border-dourado">
+                        <div className="max-w-4xl mx-auto text-center">
+                            <h2 className="text-3xl font-bold text-dourado mb-8 font-serif">Fale Conosco</h2>
+                            <div className="flex flex-col md:flex-row justify-center gap-10 items-center">
+                                <a href={`https://wa.me/${numeroWhats}`} target="_blank" className="flex items-center gap-3 hover:text-dourado transition-colors">
+                                    <span className="bg-white/10 p-3 rounded-full text-xl">📱</span>
+                                    <span className="text-lg">WhatsApp: (13) 99205-1054</span>
+                                </a>
+                                <a href="https://www.instagram.com/ga_docees/" target="_blank" className="flex items-center gap-3 hover:text-dourado transition-colors">
+                                    <span className="bg-white/10 p-3 rounded-full text-xl">📸</span>
+                                    <span className="text-lg">Instagram: @ga_docees</span>
+                                </a>
+                            </div>
+                            <div className="mt-12 pt-8 border-t border-white/20 text-sm text-white/70">
+                                &copy; 2024 GA Doces - "Cada pedacinho importa!"
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            );
+        }
+
+        function CardDoce({ doce, aoAdicionar }) {
+            const [sabor, setSabor] = useState(doce.sabores[0]);
+
+            return (
+                <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all border border-gray-100 flex flex-col group">
+                    <div className="overflow-hidden h-52">
+                        <img src={doce.imagem} alt={doce.nome} className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                    </div>
+                    <div className="p-6 flex flex-col flex-grow">
+                        <h3 className="text-2xl font-bold mb-2 text-roxo">{doce.nome}</h3>
+                        <p className="text-gray-500 text-sm mb-6 leading-relaxed">{doce.descricao}</p>
+                        
+                        <div className="mt-auto">
+                            <select 
+                                value={sabor}
+                                onChange={(e) => setSabor(e.target.value)}
+                                className="w-full p-3 bg-gray-50 border-2 border-gray-100 rounded-xl text-sm mb-4 outline-none focus:border-dourado transition-colors"
+                            >
+                                {doce.sabores.map(s => <option key={s} value={s}>{s}</option>)}
+                            </select>
+                            
+                            <div className="flex justify-between items-center">
+                                <span className="text-xl font-bold text-gray-800">R$ {doce.preco.toFixed(2)}</span>
+                                <button 
+                                    onClick={() => aoAdicionar(doce, sabor)}
+                                    className="bg-roxo text-white px-6 py-2 rounded-full text-sm font-bold hover:bg-opacity-90 shadow-md active:scale-95 transition-all"
+                                >
+                                    Adicionar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
