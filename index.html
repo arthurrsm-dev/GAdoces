@@ -29,11 +29,10 @@ const PRODUTOS = [
     { id: 2, nome: "Alfajor", descricao: "Alfajores delicados, banhados com chocolate nobre.", preco: 8.00, imagem: "./alfajor.jpeg", sabores: ["Doce de Leite", "Brigadeiro"] },
     { id: 3, nome: "Palha Italiana", descricao: "Palha italiana cremosa, combinação perfeita de maciez e crocância.", preco: 8.00, imagem: "https://static.itdg.com.br/images/640-400/0905759e2388082609f88813f04b16e5/328303-original.jpg", sabores: ["Brigadeiro", "Oreo"] },
     { id: 4, nome: "Tortinha Gourmet", descricao: "Camadas de recheio, biscoito maisena e cobertura de ganache de chocolate.", preco: 12.00, imagem: "./tortinha-gourmet.jpg", sabores: ["Maracujá", "Limão"] },
-    { id: 5, nome: "Caixa Surpresa (4 Unidades)", descricao: "Monte sua caixa com 4 delícias à sua escolha! Perfeito para presentear.", preco: 36.00, imagem: "./caixa-personalizada.jpg", isCombo: true }
+    { id: 5, nome: "Box Premium", descricao: "Monte sua caixa com 4 delícias à sua escolha! Perfeito para presentear.", preco: 36.00, imagem: "./caixa-personalizada.jpg", isCombo: true }
 ];
 
 const CUPONS = {
-    "PRIMEIRACOMPRA": 0.10, // 10% de desconto
     "GADOCES5": 5.00       // 5 reais de desconto fixo
 };
 
@@ -206,8 +205,32 @@ function App() {
                 <p className="text-white text-lg md:text-xl mb-8 opacity-90 font-light tracking-wide z-10">Onde cada pedacinho importa de verdade.</p>
                 <div className="flex flex-col sm:flex-row gap-4 z-10">
                     <a href="#catalogo" className="border border-white text-white px-8 py-3 rounded-full font-bold hover:bg-white hover:text-roxo transition-all shadow-lg">Ver Catálogo</a>
+                    <a href="#sobre" className="border border-white text-white px-8 py-3 rounded-full font-bold hover:bg-white hover:text-roxo transition-all">Nossa História</a>
                 </div>
             </header>
+
+            {/* Nossa História */}
+                <section id="sobre" className="py-24 px-6 bg-white text-center">
+                    <div className="max-w-4xl mx-auto">
+                        <h2 className="text-4xl font-bold text-roxo mb-6">Nossa História</h2>
+                        <div className="w-20 h-1 bg-dourado mx-auto mb-8"></div>
+                        <p className="text-lg text-gray-600 leading-relaxed italic">
+                            "A GA Doces nasceu da paixão por transformar ingredientes simples em momentos inesquecíveis. 
+                            Idealizada por três amigos que sonhavam em empreender juntos, a GA Doces surgiu como uma faísca 
+                            de esperança. Criando produtos artesanais, com atenção aos detalhes e muito amor. Nosso compromisso 
+                            é com a qualidade e com o sorriso de cada cliente ao provar cada pedaço."
+                        </p>
+                    </div>
+                </section>
+            
+            {/* Divisor Elegante entre as seções */}
+                    <div className="bg-gray-50 flex justify-center pt-16 pb-8">
+                        <div className="flex items-center gap-4">
+                            <div className="w-16 md:w-32 h-px bg-[#D4AF37]"></div>
+                            <span className="text-[#D4AF37] text-2xl">✦</span>
+                            <div className="w-16 md:w-32 h-px bg-[#D4AF37]"></div>
+                        </div>
+                    </div>
 
             {/* Catálogo */}
             <section id="catalogo" className="py-24 bg-gray-50 px-4">
