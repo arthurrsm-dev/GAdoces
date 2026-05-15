@@ -25,11 +25,13 @@
         const { useState, useEffect } = React;
 
 const PRODUTOS = [
-    { id: 1, nome: "Brownie Recheado", descricao: "Brownies recheados artesanais, que derretem a cada mordida.", preco: 10.00, imagem: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBy45IzvQemJ6_9eleq4NzW_SAorpwTrYyQw&s", sabores: ["Beijinho", "Doce de Leite"] },
-    { id: 2, nome: "Alfajor", descricao: "Alfajores delicados, banhados com chocolate nobre.", preco: 8.00, imagem: "./alfajor.jpeg", sabores: ["Doce de Leite", "Brigadeiro"] },
-    { id: 3, nome: "Palha Italiana", descricao: "Palha italiana cremosa, combinação perfeita de maciez e crocância.", preco: 8.00, imagem: "https://static.itdg.com.br/images/640-400/0905759e2388082609f88813f04b16e5/328303-original.jpg", sabores: ["Brigadeiro", "Oreo"] },
-    { id: 4, nome: "Tortinha Gourmet", descricao: "Camadas de recheio, biscoito maisena e cobertura de ganache de chocolate.", preco: 12.00, imagem: "./tortinha-gourmet.jpg", sabores: ["Maracujá", "Limão"] },
-    { id: 5, nome: "Box Premium", descricao: "Monte sua caixa com 4 delícias à sua escolha! Perfeito para presentear.", preco: 36.00, imagem: "./caixa-personalizada.jpg", isCombo: true }
+    { id: 1, nome: "Brownie Recheado", descricao: "Brownies recheados artesanais, que derretem a cada mordida.", preco: 8.00, imagem: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBy45IzvQemJ6_9eleq4NzW_SAorpwTrYyQw&s", sabores: ["Beijinho", "Doce de Leite"] },
+    { id: 2, nome: "Alfajor", descricao: "Alfajores delicados, banhados com chocolate nobre.", preco: 6.00, imagem: "./alfajor.jpeg", sabores: ["Doce de Leite", "Brigadeiro"] },
+    { id: 3, nome: "Palha Italiana", descricao: "Palha italiana cremosa, combinação perfeita de maciez e crocância.", preco: 6.00, imagem: "https://static.itdg.com.br/images/640-400/0905759e2388082609f88813f04b16e5/328303-original.jpg", sabores: ["Brigadeiro", "Oreo"] },
+    { id: 4, nome: "Tortinha Gourmet", descricao: "Camadas de recheio, biscoito maisena e cobertura de ganache de chocolate.", preco: 10.00, imagem: "./tortinha-gourmet.jpg", sabores: ["Maracujá", "Limão"] },
+    { id: 5, nome: "Box Premium", descricao: "Monte sua caixa com 4 delícias à sua escolha! Perfeito para presentear.", preco: 32.00, imagem: "./caixa-personalizada.jpg", isCombo: true },
+    // NOVO PRODUTO ADICIONADO AQUI:
+    { id: 6, nome: "Salgados Fritos", descricao: "Salgadinhos fritos na hora. Crocantes e deliciosos! (Pedido mínimo: 5 unidades)", preco: 2.00, imagem: "https://i.ytimg.com/vi/aVQO0FWJSx4/maxresdefault.jpg", isSalgado: true, sabores: ["Coxinha", "Maravilha", "Bolinha de Queijo", "Enroladinho de Salsicha", "Croquete de Carne"] }
 ];
 
 const CUPONS = {
@@ -46,7 +48,6 @@ function App() {
     const adicionarAoCarrinho = (produto, sabor) => {
         const item = { ...produto, saborEscolhido: sabor, unicoId: Date.now() };
         setCarrinho([...carrinho, item]);
-        // Feedback visual de adicionado
     };
 
     const removerDoCarrinho = (id) => {
@@ -146,7 +147,6 @@ function App() {
 
                     {carrinho.length > 0 && (
                         <div className="p-6 bg-gray-50 border-t">
-                            {/* Sistema de Cupom */}
                             <div className="mb-4">
                                 <p className="text-xs font-bold text-gray-500 uppercase mb-2">Cupom de Desconto</p>
                                 <div className="flex gap-2">
@@ -265,8 +265,14 @@ function App() {
 }
 
 function CardDoce({ doce, aoAdicionar }) {
+    // Estado para doces comuns
     const [sabor, setSabor] = useState(doce.sabores ? doce.sabores[0] : "");
+    // Estado para box
     const [escolhas, setEscolhas] = useState(["", "", "", ""]);
+    // Estado para os salgados (mapeia o nome do sabor para a quantidade selecionada)
+    const [quantidadesSalgado, setQuantidadesSalgado] = useState(
+        doce.isSalgado ? doce.sabores.reduce((acc, curr) => ({ ...acc, [curr]: 0 }), {}) : {}
+    );
 
     const listaParaEscolha = [
         "Brownie (Beijinho)", "Brownie (Doce de Leite)",
@@ -281,6 +287,13 @@ function CardDoce({ doce, aoAdicionar }) {
         setEscolhas(novasEscolhas);
     };
 
+    const alterarQtdSalgado = (saborStr, delta) => {
+        setQuantidadesSalgado(prev => ({
+            ...prev,
+            [saborStr]: Math.max(0, prev[saborStr] + delta)
+        }));
+    };
+
     const handleAdicionar = () => {
         if (doce.isCombo) {
             const saboresFinais = escolhas.filter(e => e !== "").join(", ");
@@ -289,10 +302,39 @@ function CardDoce({ doce, aoAdicionar }) {
                 return;
             }
             aoAdicionar(doce, saboresFinais);
+        } else if (doce.isSalgado) {
+            const totalSalgados = Object.values(quantidadesSalgado).reduce((a, b) => a + b, 0);
+            if (totalSalgados < 5) {
+                alert("O pedido mínimo para salgados é de 5 unidades. Adicione mais opções!");
+                return;
+            }
+            
+            // Monta o texto dos sabores escolhidos (ex: "3x Coxinha, 2x Maravilha")
+            const saboresFinais = Object.entries(quantidadesSalgado)
+                .filter(([_, qtd]) => qtd > 0)
+                .map(([nomeSabor, qtd]) => `${qtd}x ${nomeSabor}`)
+                .join(", ");
+
+            // Cria um item agrupado para o carrinho com o preço total da seleção
+            const itemSalgadoParaCarrinho = {
+                ...doce,
+                preco: totalSalgados * doce.preco, // Ajusta o preço (ex: 5 salgados * R$ 2,00 = R$ 10,00)
+            };
+            
+            aoAdicionar(itemSalgadoParaCarrinho, saboresFinais);
+
+            // Reseta a seleção após adicionar
+            setQuantidadesSalgado(doce.sabores.reduce((acc, curr) => ({ ...acc, [curr]: 0 }), {}));
         } else {
             aoAdicionar(doce, sabor);
         }
     };
+
+    // Cálculos para o display de preço no card
+    const totalSalgadosNoCard = doce.isSalgado ? Object.values(quantidadesSalgado).reduce((a, b) => a + b, 0) : 0;
+    const precoDisplay = doce.isSalgado 
+        ? (totalSalgadosNoCard > 0 ? (totalSalgadosNoCard * doce.preco).toFixed(2) : doce.preco.toFixed(2) + " / un") 
+        : doce.preco.toFixed(2);
 
     return (
         <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all border border-gray-100 flex flex-col group">
@@ -317,6 +359,30 @@ function CardDoce({ doce, aoAdicionar }) {
                                 </select>
                             ))}
                         </div>
+                    ) : doce.isSalgado ? (
+                        <div className="space-y-2 mb-4">
+                            {doce.sabores.map(s => (
+                                <div key={s} className="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-100">
+                                    <span className="text-sm text-gray-700">{s}</span>
+                                    <div className="flex items-center gap-3">
+                                        <button 
+                                            onClick={() => alterarQtdSalgado(s, -1)} 
+                                            className="w-7 h-7 rounded bg-gray-200 text-gray-700 flex items-center justify-center font-bold hover:bg-gray-300 transition-colors"
+                                        >-</button>
+                                        <span className="w-4 text-center text-sm font-bold text-roxo">
+                                            {quantidadesSalgado[s]}
+                                        </span>
+                                        <button 
+                                            onClick={() => alterarQtdSalgado(s, 1)} 
+                                            className="w-7 h-7 rounded bg-roxo text-white flex items-center justify-center font-bold hover:bg-opacity-90 transition-colors"
+                                        >+</button>
+                                    </div>
+                                </div>
+                            ))}
+                            <p className={`text-[11px] font-bold text-center mt-2 ${totalSalgadosNoCard > 0 && totalSalgadosNoCard < 5 ? 'text-red-500' : 'text-gray-400'}`}>
+                                Total selecionado: {totalSalgadosNoCard} (Mínimo: 5)
+                            </p>
+                        </div>
                     ) : (
                         <select 
                             value={sabor}
@@ -327,8 +393,10 @@ function CardDoce({ doce, aoAdicionar }) {
                         </select>
                     )}
                     
-                    <div className="flex justify-between items-center mt-4">
-                        <span className="text-xl font-bold text-gray-800">R$ {doce.preco.toFixed(2)}</span>
+                    <div className="flex justify-between items-center mt-4 border-t pt-4">
+                        <span className="text-xl font-bold text-gray-800">
+                            R$ {precoDisplay}
+                        </span>
                         <button 
                             onClick={handleAdicionar}
                             className="bg-roxo text-white px-6 py-2 rounded-full text-sm font-bold hover:bg-opacity-90 shadow-md active:scale-95 transition-all"
